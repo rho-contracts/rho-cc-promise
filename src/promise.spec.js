@@ -1,28 +1,30 @@
+/* global Promise */
+
 var c = require('rho-contracts'),
-    should = require('should');
+    _ = require('underscore');
 
-c.promise = require('./promise').withDefaultError(c.error);
+require('should');
 
-// For convenience and conciseness.
-var good = should.doesNotThrow;
-var bad = function (block) { should.throws(block, c.ContractError); };
-
+var returnsPromise = require('./promise').returnsPromise;
 
 describe('c.callback with a number result', function () {
 
-    var numberPromise = c.promise({ result: c.number });
-    var returnsNumberPromise = c.fun().returns(numberPromise);
-    var invokeWith = function (impl, value) {
-        return returnsNumberPromise.wrap(impl)(value);
+    var returnsNumberPromise = _(returnsPromise).partial(
+        c.fun(),
+        c.number,
+        c.error
+    );
+    var invoke = function (impl) {
+        return returnsNumberPromise(impl)();
     };
 
     context('rejected with an error', function () {
         it('does not return a contract error', function () {
             var error = Error('boom');
 
-            var impl = function (value) { return Promise.reject(value); };
+            var impl = function () { return Promise.reject(error); };
 
-            return invokeWith(impl, error)
+            return invoke(impl)
                 .should.be.rejectedWith(Error, { message: 'boom' });
         });
     });
@@ -31,9 +33,9 @@ describe('c.callback with a number result', function () {
         it('does not return a contract error', function () {
             var result = 0;
 
-            var impl = function (value) { return Promise.resolve(value); };
+            var impl = function () { return Promise.resolve(result); };
 
-            return invokeWith(impl, result)
+            return invoke(impl)
                 .should.be.fulfilledWith(result);
         });
     });
@@ -42,11 +44,11 @@ describe('c.callback with a number result', function () {
         it('returns a contract error', function () {
             var badResults = ['0', null, undefined];
 
-            var impl = function (value) { return Promise.resolve(value); };
-
             return Promise.all(
                 badResults.map(function (badResult) {
-                    return invokeWith(impl, badResult)
+                    var impl = function () { return Promise.resolve(badResult); };
+
+                    return invoke(impl)
                         .should.be.rejectedWith(c.ContractError);
                 })
             );
@@ -56,26 +58,31 @@ describe('c.callback with a number result', function () {
 
 describe('c.promise with no result', function () {
 
-    var emptyPromise = c.promise();
-    var returnsEmptyPromise = c.fun().returns(numberPromise);
-    var invokeWith = function (impl, value) {
-        return returnsEmptyPromise.wrap(impl)(value);
+    var returnsEmptyPromise = _(returnsPromise).partial(
+        c.fun(),
+        c.value(undefined),
+        c.error
+    );
+    var invoke = function (impl) {
+        return returnsEmptyPromise(impl)();
     };
 
     context('resolves with no argument', function () {
         it('fulfills normally', function () {
             var impl = function () { return Promise.resolve(); };
 
-            return invokeWith(impl)
+            return invoke(impl)
                 .should.be.fulfilledWith(undefined);
         });
     });
 
     context('resolves with a value', function () {
         it('returns a contract error', function () {
-            var impl = function (value) { return Promise.resolve(value); };
+            var value = '0';
 
-            return invokeWith(impl, '0')
+            var impl = function () { return Promise.resolve(value); };
+
+            return invoke(impl)
                 .should.be.rejectedWith(c.ContractError);
         });
     });
@@ -84,9 +91,9 @@ describe('c.promise with no result', function () {
         it('does not return a contract error', function () {
             var error = Error('boom');
 
-            var impl = function (value) { return Promise.reject(value); };
+            var impl = function () { return Promise.reject(error); };
 
-            return invokeWith(impl, error)
+            return invoke(impl)
                 .should.be.rejectedWith(Error, { message: 'boom' });
         });
     });
@@ -94,17 +101,20 @@ describe('c.promise with no result', function () {
 
 describe('c.promise with optional results', function () {
 
-    var optionalNumberPromise = c.promise({ result: c.optional(c.number) }).withError(c.string);
-    var returnsOptionalNumberPromise = c.fun().returns(optionalNumberPromise);
-    var invokeWith = function (impl, value) {
-        return returnsOptionalNumberPromise.wrap(impl)();
+    var returnsOptionalNumberPromise = _(returnsPromise).partial(
+        c.fun(),
+        c.optional(c.number),
+        c.error
+    );
+    var invoke = function (impl) {
+        return returnsOptionalNumberPromise(impl)();
     };
 
     context('resolves with no result', function () {
         it('fultills normally', function () {
             var impl = function () { return Promise.resolve(); };
 
-            return invokeWith(impl)
+            return invoke(impl)
                 .should.be.fulfilledWith(undefined);
         });
     });
@@ -113,9 +123,9 @@ describe('c.promise with optional results', function () {
         it('fulfills normally', function () {
             var value = 0;
 
-            var impl = function (value) { return Promise.resolve(value); };
+            var impl = function () { return Promise.resolve(value); };
 
-            return invokeWith(impl, value)
+            return invoke(impl)
                 .should.be.fulfilledWith(value);
         });
     });
@@ -124,9 +134,9 @@ describe('c.promise with optional results', function () {
         it('rejects with a contract error', function () {
             var value = '0';
 
-            var impl = function (value) { return Promise.resolve(value); };
+            var impl = function () { return Promise.resolve(value); };
 
-            return invokeWith(impl, value)
+            return invoke(impl)
                 .should.be.rejectedWith(c.ContractError);
         });
     });
@@ -135,9 +145,9 @@ describe('c.promise with optional results', function () {
         it('rejects with a contract error', function () {
             var value = '0';
 
-            var impl = function (value) { return Promise.reject(value); };
+            var impl = function () { return Promise.reject(value); };
 
-            return invokeWith(impl, value)
+            return invoke(impl)
                 .should.be.rejectedWith(c.ContractError);
         });
     });
@@ -146,10 +156,13 @@ describe('c.promise with optional results', function () {
 describe('c.callback with a custom error contract', function () {
 
     var errorContract = c.array(c.error);
-    var optionalNumberPromise = c.promise({ result: c.optional(c.number) }).withError(errorContract);
-    var returnsOptionalNumberPromise = c.fun().returns(optionalNumberPromise);
-    var invokeWith = function (impl, value) {
-        return returnsOptionalNumberPromise.wrap(impl)();
+    var returnsCustomErrorPromise = _(returnsPromise).partial(
+        c.fun(),
+        c.optional(c.number),
+        errorContract
+    );
+    var invoke = function (impl) {
+        return returnsCustomErrorPromise(impl)();
     };
 
     context('invoked with a good error', function () {
@@ -160,12 +173,12 @@ describe('c.callback with a custom error contract', function () {
                 [],
             ];
 
-            var impl = function (value) { return Promise.reject(value); };
-
             return Promise.all(
-                goodErrors.map(function (badResult) {
-                    return invokeWith(impl, badResult)
-                        .should.be.rejectedWith(badResult);
+                goodErrors.map(function (goodError) {
+                    var impl = function () { return Promise.reject(goodError); };
+
+                    return invoke(impl)
+                        .should.be.rejectedWith(goodError);
                 })
             );
         });
@@ -175,9 +188,9 @@ describe('c.callback with a custom error contract', function () {
         it('returns a contract error', function () {
             var badError = Error();
 
-            var impl = function (value) { return Promise.reject(value); };
+            var impl = function () { return Promise.reject(badError); };
 
-            return invokeWith(impl, badError)
+            return invoke(impl)
                         .should.be.rejectedWith(c.ContractError);
         });
     });

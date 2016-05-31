@@ -3,11 +3,14 @@ var c = require('rho-contracts'),
 
 var isThenable = c.pred(function (value) {
     return _(value.then).isFunction();
-};
+});
 
-var returnsPromise = function (wrappedFn, resultContract, errorContract) {
+var returnsPromise = function (functionContract, resultContract, errorContract, impl) {
     return function () {
-        var result = wrappedFn.returns(isThenable).apply(this, arguments);
+        var result = functionContract
+            .returns(isThenable)
+            .wrap(impl)
+            .apply(this, arguments);
 
         return result.then(
             function (result) {
@@ -23,4 +26,3 @@ var returnsPromise = function (wrappedFn, resultContract, errorContract) {
 };
 
 exports.returnsPromise = returnsPromise;
-exports.withDefaultError = _(returnsPromise).partial(_, _, c.error);
