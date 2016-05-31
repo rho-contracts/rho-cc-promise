@@ -6,14 +6,6 @@ require('should');
 
 describe('c.promise with a number result', function () {
 
-    // var returnsNumberPromise = _(returnsPromise).partial(
-    //     c.fun(),
-    //     c.number,
-    //     c.error
-    // );
-    // var invoke = function (impl) {
-    //     return returnsNumberPromise(impl)();
-    // };
     var returnsNumberPromise = c.fun().returnsPromise(c.number);
     var invoke = function (impl) {
         return returnsNumberPromise.wrap(impl)();
@@ -59,14 +51,6 @@ describe('c.promise with a number result', function () {
 
 describe('c.promise with no result', function () {
 
-    // var returnsEmptyPromise = _(returnsPromise).partial(
-    //     c.fun(),
-    //     c.value(undefined),
-    //     c.error
-    // );
-    // var invoke = function (impl) {
-    //     return returnsEmptyPromise(impl)();
-    // };
     var returnsEmptyPromise = c.fun().returnsPromise(c.value(undefined));
     var invoke = function (impl) {
         return returnsEmptyPromise.wrap(impl)();
@@ -106,14 +90,6 @@ describe('c.promise with no result', function () {
 
 describe('c.promise with optional results', function () {
 
-    // var returnsOptionalNumberPromise = _(returnsPromise).partial(
-    //     c.fun(),
-    //     c.optional(c.number),
-    //     c.error
-    // );
-    // var invoke = function (impl) {
-    //     return returnsOptionalNumberPromise(impl)();
-    // };
     var returnsOptionalNumberPromise = c.fun().returnsPromise(c.optional(c.number));
     var invoke = function (impl) {
         return returnsOptionalNumberPromise.wrap(impl)();
@@ -165,14 +141,6 @@ describe('c.promise with optional results', function () {
 describe('c.callback with a custom error contract', function () {
 
     var errorContract = c.array(c.error);
-    // var returnsCustomErrorPromise = _(returnsPromise).partial(
-    //     c.fun(),
-    //     c.optional(c.number),
-    //     errorContract
-    // );
-    // var invoke = function (impl) {
-    //     return returnsCustomErrorPromise(impl)();
-    // };
     var returnsCustomErrorPromise = c.fun().returnsPromise(c.optional(c.number)).withError(errorContract);
     var invoke = function (impl) {
         return returnsCustomErrorPromise.wrap(impl)();
