@@ -31,14 +31,12 @@ var returnsPromise2 = function (resultContract) {
     var errorContract = c.error;
 
     return _({}).extend(this, {
-        wrap: function (impl) {
-            var functionContract = this;
+        wrap: c.fun({ impl: c.anyFunction }).wrap(function (impl) {
+            var returnsThenable = this.returns(isThenable);
+            var wrapped = originalWrap.call(returnsThenable, impl);
 
             return function () {
-                var returnsThenable = functionContract.returns(isThenable);
-                var wrapped = originalWrap.call(returnsThenable, impl);
-
-                var result = wrapped.apply(this.arguments);
+                var result = wrapped.apply(this, arguments);
 
                 return result.then(
                     function (result) {
@@ -52,7 +50,7 @@ var returnsPromise2 = function (resultContract) {
                 );
 
             };
-        },
+        }),
     });
 };
 
