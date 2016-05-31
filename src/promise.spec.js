@@ -178,6 +178,11 @@ describe('c.callback with a custom error contract', function () {
         return returnsCustomErrorPromise.wrap(impl)();
     };
 
+    it('displays a good description', function () {
+        returnsCustomErrorPromise.toString().should.eql(
+            'c.fun( -> Promise(c.optional(c.number)).withError(c.array(c.error))');
+    });
+
     context('invoked with a good error', function () {
         it('returns the error', function () {
             var goodErrors = [

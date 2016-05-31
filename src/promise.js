@@ -5,27 +5,7 @@ var isThenable = c.pred(function (value) {
     return _(value.then).isFunction();
 });
 
-var returnsPromise = function (functionContract, resultContract, errorContract, impl) {
-    return function () {
-        var result = functionContract
-            .returns(isThenable)
-            .wrap(impl)
-            .apply(this, arguments);
-
-        return result.then(
-            function (result) {
-                resultContract.check(result);
-                return result;
-            },
-            function (err) {
-                errorContract.check(err);
-                throw err;
-            }
-        );
-    };
-};
-
-var returnsPromise2 = function (resultContract) {
+var returnsPromise = function (resultContract) {
     var result = _(this).clone();
 
     result._errorContract = c.error;
@@ -67,6 +47,14 @@ var returnsPromise2 = function (resultContract) {
         return oldWrapper.call(self, checkPromise, next, context);
     };
 
+    result.toString = function () {
+        return 'c.' + this.contractName + '(' +
+            (this.thisContract !== c.any ? 'this: ' + this.thisContract + ', ' : '') +
+            this.argumentContracts.join(', ') +
+            (this.extraArgumentContract ? '...' + this.extraArgumentContract : '') +
+            ' -> Promise(' + resultContract + ').withError(' + this._errorContract + ')';
+    };
+
     return result;
 };
 
@@ -75,7 +63,7 @@ var mixin = function (c) {
         return function () {
             var result = f.apply(null, arguments);
 
-            result.returnsPromise = returnsPromise2;
+            result.returnsPromise = returnsPromise;
 
             return result;
         };
@@ -87,6 +75,4 @@ var mixin = function (c) {
     });
 };
 
-
 exports.mixin = mixin;
-exports.returnsPromise = returnsPromise;
