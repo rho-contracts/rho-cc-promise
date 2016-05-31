@@ -25,4 +25,23 @@ var returnsPromise = function (functionContract, resultContract, errorContract, 
     };
 };
 
+var mixin = function (c) {
+    var augment = function (f) {
+        var result = function () {
+            return f.apply(this, arguments);
+        };
+
+        result.returnsPromise = function () {};
+
+        return result;
+    };
+
+    return _({}).extend(c, {
+        fn: augment(c.fn),
+        fun: augment(c.fun),
+    });
+};
+
+
+exports.mixin = mixin;
 exports.returnsPromise = returnsPromise;

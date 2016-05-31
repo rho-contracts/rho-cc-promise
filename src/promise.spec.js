@@ -1,6 +1,6 @@
 /* global Promise */
 
-var c = require('rho-contracts'),
+var c = require('./promise').mixin(require('rho-contracts')),
     _ = require('underscore');
 
 require('should');
