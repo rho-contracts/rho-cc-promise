@@ -7,15 +7,19 @@ require('should');
 
 var returnsPromise = require('./promise').returnsPromise;
 
-describe('c.callback with a number result', function () {
+describe('c.promise with a number result', function () {
 
-    var returnsNumberPromise = _(returnsPromise).partial(
-        c.fun(),
-        c.number,
-        c.error
-    );
+    // var returnsNumberPromise = _(returnsPromise).partial(
+    //     c.fun(),
+    //     c.number,
+    //     c.error
+    // );
+    // var invoke = function (impl) {
+    //     return returnsNumberPromise(impl)();
+    // };
+    var returnsNumberPromise = c.fun().returnsPromise(c.number);
     var invoke = function (impl) {
-        return returnsNumberPromise(impl)();
+        return returnsNumberPromise.wrap(impl)();
     };
 
     context('rejected with an error', function () {
@@ -58,13 +62,17 @@ describe('c.callback with a number result', function () {
 
 describe('c.promise with no result', function () {
 
-    var returnsEmptyPromise = _(returnsPromise).partial(
-        c.fun(),
-        c.value(undefined),
-        c.error
-    );
+    // var returnsEmptyPromise = _(returnsPromise).partial(
+    //     c.fun(),
+    //     c.value(undefined),
+    //     c.error
+    // );
+    // var invoke = function (impl) {
+    //     return returnsEmptyPromise(impl)();
+    // };
+    var returnsEmptyPromise = c.fun().returnsPromise(c.value(undefined));
     var invoke = function (impl) {
-        return returnsEmptyPromise(impl)();
+        return returnsEmptyPromise.wrap(impl)();
     };
 
     context('resolves with no argument', function () {
@@ -101,13 +109,17 @@ describe('c.promise with no result', function () {
 
 describe('c.promise with optional results', function () {
 
-    var returnsOptionalNumberPromise = _(returnsPromise).partial(
-        c.fun(),
-        c.optional(c.number),
-        c.error
-    );
+    // var returnsOptionalNumberPromise = _(returnsPromise).partial(
+    //     c.fun(),
+    //     c.optional(c.number),
+    //     c.error
+    // );
+    // var invoke = function (impl) {
+    //     return returnsOptionalNumberPromise(impl)();
+    // };
+    var returnsOptionalNumberPromise = c.fun().returnsPromise(c.optional(c.number));
     var invoke = function (impl) {
-        return returnsOptionalNumberPromise(impl)();
+        return returnsOptionalNumberPromise.wrap(impl)();
     };
 
     context('resolves with no result', function () {
@@ -153,7 +165,7 @@ describe('c.promise with optional results', function () {
     });
 });
 
-describe('c.callback with a custom error contract', function () {
+describe.skip('c.callback with a custom error contract', function () {
 
     var errorContract = c.array(c.error);
     var returnsCustomErrorPromise = _(returnsPromise).partial(

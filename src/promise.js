@@ -25,15 +25,46 @@ var returnsPromise = function (functionContract, resultContract, errorContract, 
     };
 };
 
+var returnsPromise2 = function (resultContract) {
+    var originalWrap = this.wrap;
+
+    var errorContract = c.error;
+
+    return _({}).extend(this, {
+        wrap: function (impl) {
+            var functionContract = this;
+
+            return function () {
+                var returnsThenable = functionContract.returns(isThenable);
+                var wrapped = originalWrap.call(returnsThenable, impl);
+
+                var result = wrapped.apply(this.arguments);
+
+                return result.then(
+                    function (result) {
+                        resultContract.check(result);
+                        return result;
+                    },
+                    function (err) {
+                        errorContract.check(err);
+                        throw err;
+                    }
+                );
+
+            };
+        },
+    });
+};
+
 var mixin = function (c) {
     var augment = function (f) {
-        var result = function () {
-            return f.apply(this, arguments);
+        return function () {
+            var result = f.apply(null, arguments);
+
+            result.returnsPromise = returnsPromise2;
+
+            return result;
         };
-
-        result.returnsPromise = function () {};
-
-        return result;
     };
 
     return _({}).extend(c, {
