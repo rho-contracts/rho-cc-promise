@@ -1,11 +1,8 @@
 /* global Promise */
 
-var c = require('./promise').mixin(require('rho-contracts')),
-    _ = require('underscore');
+var c = require('./promise').mixin(require('rho-contracts'));
 
 require('should');
-
-var returnsPromise = require('./promise').returnsPromise;
 
 describe('c.promise with a number result', function () {
 
@@ -165,16 +162,20 @@ describe('c.promise with optional results', function () {
     });
 });
 
-describe.skip('c.callback with a custom error contract', function () {
+describe('c.callback with a custom error contract', function () {
 
     var errorContract = c.array(c.error);
-    var returnsCustomErrorPromise = _(returnsPromise).partial(
-        c.fun(),
-        c.optional(c.number),
-        errorContract
-    );
+    // var returnsCustomErrorPromise = _(returnsPromise).partial(
+    //     c.fun(),
+    //     c.optional(c.number),
+    //     errorContract
+    // );
+    // var invoke = function (impl) {
+    //     return returnsCustomErrorPromise(impl)();
+    // };
+    var returnsCustomErrorPromise = c.fun().returnsPromise(c.optional(c.number)).withError(errorContract);
     var invoke = function (impl) {
-        return returnsCustomErrorPromise(impl)();
+        return returnsCustomErrorPromise.wrap(impl)();
     };
 
     context('invoked with a good error', function () {

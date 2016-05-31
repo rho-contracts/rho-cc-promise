@@ -26,32 +26,48 @@ var returnsPromise = function (functionContract, resultContract, errorContract, 
 };
 
 var returnsPromise2 = function (resultContract) {
-    var originalWrap = this.wrap;
+    var result = _(this).clone();
 
-    var errorContract = c.error;
+    result._errorContract = c.error;
 
-    return _({}).extend(this, {
-        wrap: c.fun({ impl: c.anyFunction }).wrap(function (impl) {
-            var returnsThenable = this.returns(isThenable);
-            var wrapped = originalWrap.call(returnsThenable, impl);
+    result.withError = c.fun({ newErrorContract: c.contract })
+        .wrap(function (newErrorContract) {
+            return _({}).extend(this, { _errorContract: newErrorContract });
+        });
 
-            return function () {
-                var result = wrapped.apply(this, arguments);
+    var oldWrapper = result.wrapper;
+    result.wrapper = function (fn, next, context) {
+        var self = this;
 
-                return result.then(
-                    function (result) {
-                        resultContract.check(result);
-                        return result;
-                    },
-                    function (err) {
-                        errorContract.check(err);
-                        throw err;
-                    }
-                );
+        var contextHere = _(context).clone();
 
-            };
-        }),
-    });
+        var checkPromise = function () {
+            var result = fn.apply(this, arguments);
+
+            contextHere.blameMe = false;
+            c.privates.checkWrapWContext(isThenable, result, contextHere);
+            contextHere.blameMe = true;
+
+            return result.then(
+                function (value) {
+                    contextHere.blameMe = false;
+                    c.privates.checkWrapWContext(resultContract, value, contextHere);
+                    contextHere.blameMe = true;
+                    return result;
+                },
+                function (err) {
+                    contextHere.blameMe = false;
+                    c.privates.checkWrapWContext(self._errorContract, err, contextHere);
+                    contextHere.blameMe = true;
+                    throw err;
+                }
+            );
+        };
+
+        return oldWrapper.call(self, checkPromise, next, context);
+    };
+
+    return result;
 };
 
 var mixin = function (c) {
