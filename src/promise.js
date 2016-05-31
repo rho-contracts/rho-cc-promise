@@ -65,7 +65,7 @@ var returnsPromise = function (resultContract) {
 var mixin = function (c) {
     var augment = function (f) {
         return function () {
-            var result = f.apply(null, arguments);
+            var result = f.apply(this, arguments);
 
             result.returnsPromise = returnsPromise;
 
