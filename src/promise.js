@@ -33,13 +33,17 @@ var returnsPromise = function (resultContract) {
                     contextHere.blameMe = false;
                     c.privates.checkWrapWContext(resultContract, value, contextHere);
                     contextHere.blameMe = true;
+
+                    // Return the original promise.
                     return result;
                 },
                 function (err) {
                     contextHere.blameMe = false;
                     c.privates.checkWrapWContext(self._errorContract, err, contextHere);
                     contextHere.blameMe = true;
-                    throw err;
+
+                    // Return the original promise.
+                    return result;
                 }
             );
         };
