@@ -60,7 +60,7 @@ Pull requests welcome!
 Support
 -------
 
-If you are having issues, please let us know.
+If you are having issues, please let me know.
 
 
 License
