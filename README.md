@@ -17,8 +17,8 @@ You must use the Body Labs fork of rho-contracts:
 ```
 
 Use this module to create contracts for promises. The returned contracts check
-the values of `resolve` and optionally `reject`, propagating contract errors,
-through `reject`, in case of errors.
+the values of `resolve` and optionally `reject`, propagating contract errors
+through `reject`.
 
 Calling `withError` on the returned contract changes the type of the error
 argument to the contract specified.
@@ -37,7 +37,7 @@ cc.countPromise = cc.promise({ result: c.number });
 ```
 
 It's belived compatible with most promise implementations, including ES6
-`Promise` and implementations which adhere to A+.
+Promise and implementations which adhere to A+.
 
 
 Installation
