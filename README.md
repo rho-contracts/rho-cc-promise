@@ -23,17 +23,29 @@ through `reject`.
 Calling `withError` on the returned contract changes the type of the error
 argument to the contract specified.
 
-The main entry point of this module is `withDefaultError`, which sets
-the expected error contract, like this:
+The main entry point of this module is a mixin, which extends `c.fn` and `c.fun`
+to return contracts with `returnsPromise` methods.
 
 ```js
+const c = require('rho-cc-promise').mixin(require('rho-contracts-fork'));
 
-var c = require('rho-contracts-fork');
+const cc = {};
 
-var cc = {};
+cc.info = c.object({ data: c.any });
 
-cc.promise = require('rho-cc-promise').withDefaultError(c.error);
-cc.countPromise = cc.promise({ result: c.number });
+cc.getInfo = c.fun()
+    .returnsPromise(cc.info);
+
+// A function which returns a promise which resolves with no value.
+cc.doSomething = c.fun()
+    .returnsPromise(c.value(undefined));
+
+// A function which returns a promise which rejects with a custom error type.
+cc.customError = c.array(c.error);
+
+cc.doSomething = c.fun()
+    .returnsPromise(c.value(undefined))
+    .withError(cc.customError);
 ```
 
 It's belived compatible with most promise implementations, including ES6
