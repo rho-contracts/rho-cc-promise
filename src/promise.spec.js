@@ -1,6 +1,6 @@
 /* global Promise */
 
-var c = require('./promise').mixin(require('rho-contracts'));
+var c = require('./promise').mixin(require('rho-contracts-fork'));
 
 require('should');
 

@@ -3,16 +3,16 @@ rho-cc-promise
 
 Create [rho-contracts][] for Promises.
 
-[rho-contracts]: https://github.com/bodylabs/rho-contracts.js
+[rho-contracts]: https://github.com/bodylabs/rho-contracts-fork
 
 
 Usage
 -----
 
-You must use the Body Labs fork of rho-contracts:
+You must use the Body Labs package, `rho-contracts-fork`:
 ```js
   "dependencies": {
-    "rho-contracts": "git+https://github.com/bodylabs/rho-contracts.js.git#1.2.2"
+    "rho-contracts-fork": "^1.2.2"
   }
 ```
 
