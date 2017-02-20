@@ -1,3 +1,5 @@
+'use strict';
+
 var c = require('rho-contracts-fork'),
     _ = require('underscore');
 

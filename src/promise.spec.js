@@ -1,4 +1,4 @@
-/* global Promise */
+'use strict';
 
 var c = require('./promise').mixin(require('rho-contracts-fork'));
 
@@ -183,7 +183,8 @@ describe('c.callback with a custom error contract', function () {
 });
 
 // describe('c.callback.withDefaultError invoked with c.error', function () {
-//     var newCallback = require('./node-style-callback').withDefaultError(c.error);
+//     var newCallback = require('./node-style-callback')
+//         .withDefaultError(c.error);
 //     var contract = newCallback({ result: c.bool });
 //     var wrapped = contract.wrap(function () { });
 
