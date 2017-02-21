@@ -8,6 +8,10 @@ var isThenable = c.pred(function (value) {
 }).rename('thenable');
 
 var returnsPromise = function (resultContract) {
+    // Avoid mysterious error messages down the line. Not sure this is the
+    // best place to do this, but it works.
+    c.contract.check(resultContract);
+
     var result = _(this).clone();
 
     result._errorContract = c.error;
