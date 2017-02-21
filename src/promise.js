@@ -4,8 +4,8 @@ var c = require('rho-contracts-fork'),
     _ = require('underscore');
 
 var isThenable = c.pred(function (value) {
-    return _(value.then).isFunction();
-});
+    return value !== undefined && _(value.then).isFunction();
+}).rename('thenable');
 
 var returnsPromise = function (resultContract) {
     var result = _(this).clone();
