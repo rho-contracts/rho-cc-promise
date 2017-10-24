@@ -2,7 +2,18 @@
   "name": "rho-cc-promise",
   "description": "Create rho-contracts for promises",
   "version": "2.0.2",
-  "license": "MPL-2.0",
+  "license": "(MPL-2.0 OR MIT)",
+  "keywords": [
+    "contracts",
+    "validation",
+    "promises",
+    "rho-contracts"
+  ],
+  "author": {
+    "name": "Paul Melnikow"
+  },
+  "homepage": "https://github.com/paulmelnikow/rho-cc-promise",
+  "bugs": "https://github.com/paulmelnikow/rho-cc-promise/issues",
   "main": "src/promise.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
@@ -25,5 +36,8 @@
     "mocha": "~2.0.1",
     "rho-contracts-fork": ">=1.2.0",
     "should": "~8.3.1"
+  },
+  "engines": {
+    "node" : "6.x || 8.x"
   }
 }

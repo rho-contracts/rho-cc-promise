@@ -78,4 +78,5 @@ If you are having issues, please let me know.
 License
 -------
 
-The project is licensed under the Mozilla Public License Version 2.0.
+The project is dually licensed under the Mozilla Public License Version 2.0,
+and the MIT license. You may use either one, at your option.
