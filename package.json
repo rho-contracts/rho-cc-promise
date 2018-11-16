@@ -31,13 +31,13 @@
     "rho-contracts-fork": ">=1.2.0"
   },
   "devDependencies": {
-    "eslint": "^2.13.1",
+    "eslint": "^5.9.0",
     "eslint-plugin-bodylabs": "^8.0.0",
     "mocha": "~5.2.0",
     "rho-contracts-fork": ">=1.2.0",
     "should": "~13.2.3"
   },
   "engines": {
-    "node" : "6.x || 8.x"
+    "node": "6.x || 8.x"
   }
 }

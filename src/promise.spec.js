@@ -177,7 +177,7 @@ describe('c.callback with a custom error contract', function () {
             var impl = function () { return Promise.reject(badError); };
 
             return invoke(impl)
-                        .should.be.rejectedWith(c.ContractError);
+                .should.be.rejectedWith(c.ContractError);
         });
     });
 });
