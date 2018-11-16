@@ -1,7 +1,7 @@
 {
   "name": "rho-cc-promise",
   "description": "Create rho-contracts for promises",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "license": "(MPL-2.0 OR MIT)",
   "keywords": [
     "contracts",
@@ -12,18 +12,13 @@
   "author": {
     "name": "Paul Melnikow"
   },
-  "homepage": "https://github.com/paulmelnikow/rho-cc-promise",
-  "bugs": "https://github.com/paulmelnikow/rho-cc-promise/issues",
   "main": "src/promise.js",
   "scripts": {
     "lint": "eslint '**/*.js'",
     "unittest": "mocha src",
     "test": "npm run unittest && npm run lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:paulmelnikow/rho-cc-promise.git"
-  },
+  "repository": "paulmelnikow/rho-cc-promise",
   "dependencies": {
     "underscore": "~1.9.1"
   },
