@@ -1,3 +1,5 @@
 .eslintrc.yml
 .circleci/
 *.spec.js
+.prettierrc.yml
+.prettierignore
