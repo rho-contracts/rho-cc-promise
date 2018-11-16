@@ -23,8 +23,11 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      - run: npm run unittest
+      - run:
+          name: Run tests
+          command: npm run unittest
 
       - run:
-         command: npm run lint
-         when: always
+          name: Check lint
+          command: npm run lint
+          when: always
