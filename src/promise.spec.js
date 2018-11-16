@@ -1,186 +1,198 @@
-'use strict';
+'use strict'
 
-var c = require('./promise').mixin(require('rho-contracts-fork'));
+var c = require('./promise').mixin(require('rho-contracts-fork'))
 
-require('should');
+require('should')
 
-describe('c.promise with a number result', function () {
+describe('c.promise with a number result', function() {
+  var returnsNumberPromise = c.fun().returnsPromise(c.number)
+  var invoke = function(impl) {
+    return returnsNumberPromise.wrap(impl)()
+  }
 
-    var returnsNumberPromise = c.fun().returnsPromise(c.number);
-    var invoke = function (impl) {
-        return returnsNumberPromise.wrap(impl)();
-    };
+  context('rejected with an error', function() {
+    it('does not return a contract error', function() {
+      var error = Error('boom')
 
-    context('rejected with an error', function () {
-        it('does not return a contract error', function () {
-            var error = Error('boom');
+      var impl = function() {
+        return Promise.reject(error)
+      }
 
-            var impl = function () { return Promise.reject(error); };
+      return invoke(impl).should.be.rejectedWith(Error, { message: 'boom' })
+    })
+  })
 
-            return invoke(impl)
-                .should.be.rejectedWith(Error, { message: 'boom' });
-        });
-    });
+  context('resolved with a number result', function() {
+    it('does not return a contract error', function() {
+      var result = 0
 
-    context('resolved with a number result', function () {
-        it('does not return a contract error', function () {
-            var result = 0;
+      var impl = function() {
+        return Promise.resolve(result)
+      }
 
-            var impl = function () { return Promise.resolve(result); };
+      return invoke(impl).should.be.fulfilledWith(result)
+    })
+  })
 
-            return invoke(impl)
-                .should.be.fulfilledWith(result);
-        });
-    });
+  context('resolved with a bad result', function() {
+    it('returns a contract error', function() {
+      var badResults = ['0', null, undefined]
 
-    context('resolved with a bad result', function () {
-        it('returns a contract error', function () {
-            var badResults = ['0', null, undefined];
+      return Promise.all(
+        badResults.map(function(badResult) {
+          var impl = function() {
+            return Promise.resolve(badResult)
+          }
 
-            return Promise.all(
-                badResults.map(function (badResult) {
-                    var impl = function () { return Promise.resolve(badResult); };
+          return invoke(impl).should.be.rejectedWith(c.ContractError)
+        })
+      )
+    })
+  })
+})
 
-                    return invoke(impl)
-                        .should.be.rejectedWith(c.ContractError);
-                })
-            );
-        });
-    });
-});
+describe('c.promise with no result', function() {
+  var returnsEmptyPromise = c.fun().returnsPromise(c.value(undefined))
+  var invoke = function(impl) {
+    return returnsEmptyPromise.wrap(impl)()
+  }
 
-describe('c.promise with no result', function () {
+  context('resolves with no argument', function() {
+    it('fulfills normally', function() {
+      var impl = function() {
+        return Promise.resolve()
+      }
 
-    var returnsEmptyPromise = c.fun().returnsPromise(c.value(undefined));
-    var invoke = function (impl) {
-        return returnsEmptyPromise.wrap(impl)();
-    };
+      return invoke(impl).should.be.fulfilledWith(undefined)
+    })
+  })
 
-    context('resolves with no argument', function () {
-        it('fulfills normally', function () {
-            var impl = function () { return Promise.resolve(); };
+  context('resolves with a value', function() {
+    it('returns a contract error', function() {
+      var value = '0'
 
-            return invoke(impl)
-                .should.be.fulfilledWith(undefined);
-        });
-    });
+      var impl = function() {
+        return Promise.resolve(value)
+      }
 
-    context('resolves with a value', function () {
-        it('returns a contract error', function () {
-            var value = '0';
+      return invoke(impl).should.be.rejectedWith(c.ContractError)
+    })
+  })
 
-            var impl = function () { return Promise.resolve(value); };
+  context('rejected with an error', function() {
+    it('does not return a contract error', function() {
+      var error = Error('boom')
 
-            return invoke(impl)
-                .should.be.rejectedWith(c.ContractError);
-        });
-    });
+      var impl = function() {
+        return Promise.reject(error)
+      }
 
-    context('rejected with an error', function () {
-        it('does not return a contract error', function () {
-            var error = Error('boom');
+      return invoke(impl).should.be.rejectedWith(Error, { message: 'boom' })
+    })
+  })
+})
 
-            var impl = function () { return Promise.reject(error); };
+describe('c.promise with optional results', function() {
+  var returnsOptionalNumberPromise = c
+    .fun()
+    .returnsPromise(c.optional(c.number))
+  var invoke = function(impl) {
+    return returnsOptionalNumberPromise.wrap(impl)()
+  }
 
-            return invoke(impl)
-                .should.be.rejectedWith(Error, { message: 'boom' });
-        });
-    });
-});
+  context('resolves with no result', function() {
+    it('fultills normally', function() {
+      var impl = function() {
+        return Promise.resolve()
+      }
 
-describe('c.promise with optional results', function () {
+      return invoke(impl).should.be.fulfilledWith(undefined)
+    })
+  })
 
-    var returnsOptionalNumberPromise = c.fun().returnsPromise(c.optional(c.number));
-    var invoke = function (impl) {
-        return returnsOptionalNumberPromise.wrap(impl)();
-    };
+  context('resolves with a result', function() {
+    it('fulfills normally', function() {
+      var value = 0
 
-    context('resolves with no result', function () {
-        it('fultills normally', function () {
-            var impl = function () { return Promise.resolve(); };
+      var impl = function() {
+        return Promise.resolve(value)
+      }
 
-            return invoke(impl)
-                .should.be.fulfilledWith(undefined);
-        });
-    });
+      return invoke(impl).should.be.fulfilledWith(value)
+    })
+  })
 
-    context('resolves with a result', function () {
-        it('fulfills normally', function () {
-            var value = 0;
+  context('resolves with an incorrect result', function() {
+    it('rejects with a contract error', function() {
+      var value = '0'
 
-            var impl = function () { return Promise.resolve(value); };
+      var impl = function() {
+        return Promise.resolve(value)
+      }
 
-            return invoke(impl)
-                .should.be.fulfilledWith(value);
-        });
-    });
+      return invoke(impl).should.be.rejectedWith(c.ContractError)
+    })
+  })
 
-    context('resolves with an incorrect result', function () {
-        it('rejects with a contract error', function () {
-            var value = '0';
+  context('invoked with an incorrect error', function() {
+    it('rejects with a contract error', function() {
+      var value = '0'
 
-            var impl = function () { return Promise.resolve(value); };
+      var impl = function() {
+        return Promise.reject(value)
+      }
 
-            return invoke(impl)
-                .should.be.rejectedWith(c.ContractError);
-        });
-    });
+      return invoke(impl).should.be.rejectedWith(c.ContractError)
+    })
+  })
+})
 
-    context('invoked with an incorrect error', function () {
-        it('rejects with a contract error', function () {
-            var value = '0';
+describe('c.callback with a custom error contract', function() {
+  var errorContract = c.array(c.error)
+  var returnsCustomErrorPromise = c
+    .fun()
+    .returnsPromise(c.optional(c.number))
+    .withError(errorContract)
+  var invoke = function(impl) {
+    return returnsCustomErrorPromise.wrap(impl)()
+  }
 
-            var impl = function () { return Promise.reject(value); };
+  it('displays a good description', function() {
+    returnsCustomErrorPromise
+      .toString()
+      .should.eql(
+        'c.fun( -> Promise(c.optional(c.number)).withError(c.array(c.error))'
+      )
+  })
 
-            return invoke(impl)
-                .should.be.rejectedWith(c.ContractError);
-        });
-    });
-});
+  context('invoked with a good error', function() {
+    it('returns the error', function() {
+      var goodErrors = [[Error(), Error()], [Error()], []]
 
-describe('c.callback with a custom error contract', function () {
+      return Promise.all(
+        goodErrors.map(function(goodError) {
+          var impl = function() {
+            return Promise.reject(goodError)
+          }
 
-    var errorContract = c.array(c.error);
-    var returnsCustomErrorPromise = c.fun().returnsPromise(c.optional(c.number)).withError(errorContract);
-    var invoke = function (impl) {
-        return returnsCustomErrorPromise.wrap(impl)();
-    };
+          return invoke(impl).should.be.rejectedWith(goodError)
+        })
+      )
+    })
+  })
 
-    it('displays a good description', function () {
-        returnsCustomErrorPromise.toString().should.eql(
-            'c.fun( -> Promise(c.optional(c.number)).withError(c.array(c.error))');
-    });
+  context('invoked with an incorrect error', function() {
+    it('returns a contract error', function() {
+      var badError = Error()
 
-    context('invoked with a good error', function () {
-        it('returns the error', function () {
-            var goodErrors = [
-                [Error(), Error()],
-                [Error()],
-                [],
-            ];
+      var impl = function() {
+        return Promise.reject(badError)
+      }
 
-            return Promise.all(
-                goodErrors.map(function (goodError) {
-                    var impl = function () { return Promise.reject(goodError); };
-
-                    return invoke(impl)
-                        .should.be.rejectedWith(goodError);
-                })
-            );
-        });
-    });
-
-    context('invoked with an incorrect error', function () {
-        it('returns a contract error', function () {
-            var badError = Error();
-
-            var impl = function () { return Promise.reject(badError); };
-
-            return invoke(impl)
-                .should.be.rejectedWith(c.ContractError);
-        });
-    });
-});
+      return invoke(impl).should.be.rejectedWith(c.ContractError)
+    })
+  })
+})
 
 // describe('c.callback.withDefaultError invoked with c.error', function () {
 //     var newCallback = require('./node-style-callback')
