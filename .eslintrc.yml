@@ -1,2 +1,3 @@
 extends:
-    - "plugin:bodylabs/common"
+  - 'plugin:bodylabs/common'
+  - prettier
