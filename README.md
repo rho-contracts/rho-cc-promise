@@ -1,15 +1,13 @@
-rho-cc-promise
-==============
+# rho-cc-promise
 
 Create [rho-contracts][] for Promises.
 
 [rho-contracts]: https://github.com/bodylabs/rho-contracts-fork
 
-
-Usage
------
+## Usage
 
 You must use the Body Labs package, `rho-contracts-fork`:
+
 ```js
   "dependencies": {
     "rho-contracts-fork": "^1.2.2"
@@ -27,56 +25,47 @@ The main entry point of this module is a mixin, which extends `c.fn` and `c.fun`
 to return contracts with `returnsPromise` methods.
 
 ```js
-const c = require('rho-cc-promise').mixin(require('rho-contracts-fork'));
+const c = require('rho-cc-promise').mixin(require('rho-contracts-fork'))
 
-const cc = {};
+const cc = {}
 
-cc.info = c.object({ data: c.any });
+cc.info = c.object({ data: c.any })
 
-cc.getInfo = c.fun()
-    .returnsPromise(cc.info);
+cc.getInfo = c.fun().returnsPromise(cc.info)
 
 // A function which returns a promise which resolves with no value.
-cc.doSomething = c.fun()
-    .returnsPromise(c.value(undefined));
+cc.doSomething = c.fun().returnsPromise(c.value(undefined))
 
 // A function which returns a promise which rejects with a custom error type.
-cc.customError = c.array(c.error);
+cc.customError = c.array(c.error)
 
-cc.doSomething = c.fun()
-    .returnsPromise(c.value(undefined))
-    .withError(cc.customError);
+cc.doSomething = c
+  .fun()
+  .returnsPromise(c.value(undefined))
+  .withError(cc.customError)
 ```
 
 It's belived compatible with most promise implementations, including ES6
 Promise and implementations which adhere to A+.
 
-
-Installation
-------------
+## Installation
 
 ```sh
 npm install rho-contracts-fork rho-cc-promise
 ```
 
-
-Contribute
-----------
+## Contribute
 
 - Issue Tracker: https://github.com/paulmelnikow/rho-cc-promise/issues
 - Source Code: https://github.com/paulmelnikow/rho-cc-promise
 
 Pull requests welcome!
 
-
-Support
--------
+## Support
 
 If you are having issues, please let me know.
 
-
-License
--------
+## License
 
 The project is dually licensed under the Mozilla Public License Version 2.0,
 and the MIT license. You may use either one, at your option.

@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "eslint \"**/*.js\"",
     "unittest": "mocha src",
-    "prettier": "prettier --write src",
+    "prettier": "prettier --write \"**/*.yml\" \"**/*.md\" \"**/*.js\"",
     "prettier-check": "prettier-check \"**/*.yml\" \"**/*.md\" \"**/*.js\"",
     "test": "run-p unittest lint prettier-check"
   },
