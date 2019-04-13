@@ -18,12 +18,10 @@
     "unittest": "mocha src",
     "prettier": "prettier --write \"**/*.@(yml|md|js)\"",
     "prettier:check": "prettier --check \"**/*.@(yml|md|js)\"",
-    "test": "run-p unittest lint prettier-check"
+    "test": "run-p unittest lint prettier:check"
   },
   "repository": "paulmelnikow/rho-cc-promise",
-  "dependencies": {
-    "underscore": "~1.9.1"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "rho-contracts-fork": ">=1.2.0"
   },

@@ -1,36 +1,36 @@
 'use strict'
 
-const c = require('rho-contracts-fork'),
-  _ = require('underscore')
+const c = require('rho-contracts-fork')
 
 const isThenable = c
-  .pred(function(value) {
-    return value !== undefined && _(value.then).isFunction()
-  })
+  .pred(value => value !== undefined && typeof value.then === 'function')
   .rename('thenable')
 
-const returnsPromise = function(resultContract) {
+function returnsPromise(resultContract) {
   // Avoid mysterious error messages down the line. Not sure this is the
   // best place to do this, but it works.
   c.contract.check(resultContract)
 
-  const result = _(this).clone()
+  const result = { ...this }
 
   result._errorContract = c.error
 
   result.withError = c
     .fun({ newErrorContract: c.contract })
     .wrap(function(newErrorContract) {
-      return _({}).extend(this, { _errorContract: newErrorContract })
+      return {
+        ...this,
+        _errorContract: newErrorContract,
+      }
     })
 
   const oldWrapper = result.wrapper
   result.wrapper = function(fn, next, context) {
     const self = this
 
-    const contextHere = _(context).clone()
+    const contextHere = { ...context }
 
-    const checkPromise = function() {
+    function checkPromise() {
       const result = fn.apply(this, arguments)
 
       contextHere.blameMe = false
@@ -71,8 +71,8 @@ const returnsPromise = function(resultContract) {
   return result
 }
 
-const mixin = function(c) {
-  const augment = function(f) {
+function mixin(c) {
+  function augment(f) {
     return function() {
       const result = f.apply(this, arguments)
 
@@ -82,10 +82,11 @@ const mixin = function(c) {
     }
   }
 
-  return _({}).extend(c, {
+  return {
+    ...c,
     fn: augment(c.fn),
     fun: augment(c.fun),
-  })
+  }
 }
 
 exports.mixin = mixin
