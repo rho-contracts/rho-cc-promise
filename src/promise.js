@@ -1,20 +1,20 @@
 'use strict'
 
-var c = require('rho-contracts-fork'),
+const c = require('rho-contracts-fork'),
   _ = require('underscore')
 
-var isThenable = c
+const isThenable = c
   .pred(function(value) {
     return value !== undefined && _(value.then).isFunction()
   })
   .rename('thenable')
 
-var returnsPromise = function(resultContract) {
+const returnsPromise = function(resultContract) {
   // Avoid mysterious error messages down the line. Not sure this is the
   // best place to do this, but it works.
   c.contract.check(resultContract)
 
-  var result = _(this).clone()
+  const result = _(this).clone()
 
   result._errorContract = c.error
 
@@ -24,14 +24,14 @@ var returnsPromise = function(resultContract) {
       return _({}).extend(this, { _errorContract: newErrorContract })
     })
 
-  var oldWrapper = result.wrapper
+  const oldWrapper = result.wrapper
   result.wrapper = function(fn, next, context) {
-    var self = this
+    const self = this
 
-    var contextHere = _(context).clone()
+    const contextHere = _(context).clone()
 
-    var checkPromise = function() {
-      var result = fn.apply(this, arguments)
+    const checkPromise = function() {
+      const result = fn.apply(this, arguments)
 
       contextHere.blameMe = false
       c.privates.checkWrapWContext(isThenable, result, contextHere)
@@ -61,28 +61,20 @@ var returnsPromise = function(resultContract) {
   }
 
   result.toString = function() {
-    return (
-      'c.' +
-      this.contractName +
-      '(' +
-      (this.thisContract !== c.any ? 'this: ' + this.thisContract + ', ' : '') +
-      this.argumentContracts.join(', ') +
-      (this.extraArgumentContract ? '...' + this.extraArgumentContract : '') +
-      ' -> Promise(' +
-      resultContract +
-      ').withError(' +
-      this._errorContract +
-      ')'
-    )
+    return `c.${this.contractName}(${
+      this.thisContract !== c.any ? `this: ${this.thisContract}, ` : ''
+    }${this.argumentContracts.join(', ')}${
+      this.extraArgumentContract ? `...${this.extraArgumentContract}` : ''
+    } -> Promise(${resultContract}).withError(${this._errorContract})`
   }
 
   return result
 }
 
-var mixin = function(c) {
-  var augment = function(f) {
+const mixin = function(c) {
+  const augment = function(f) {
     return function() {
-      var result = f.apply(this, arguments)
+      const result = f.apply(this, arguments)
 
       result.returnsPromise = returnsPromise
 
