@@ -61,19 +61,11 @@ const returnsPromise = function(resultContract) {
   }
 
   result.toString = function() {
-    return (
-      `c.${ 
-      this.contractName 
-      }(${ 
-      this.thisContract !== c.any ? `this: ${  this.thisContract  }, ` : '' 
-      }${this.argumentContracts.join(', ') 
-      }${this.extraArgumentContract ? `...${  this.extraArgumentContract}` : '' 
-      } -> Promise(${ 
-      resultContract 
-      }).withError(${ 
-      this._errorContract 
-      })`
-    )
+    return `c.${this.contractName}(${
+      this.thisContract !== c.any ? `this: ${this.thisContract}, ` : ''
+    }${this.argumentContracts.join(', ')}${
+      this.extraArgumentContract ? `...${this.extraArgumentContract}` : ''
+    } -> Promise(${resultContract}).withError(${this._errorContract})`
   }
 
   return result
