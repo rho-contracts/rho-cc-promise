@@ -2,11 +2,11 @@
 
 [![version](https://img.shields.io/npm/v/rho-cc-promise.svg?style=flat-square)][npm]
 [![license](https://img.shields.io/npm/l/rho-cc-promise.svg?style=flat-square)][npm]
-[![build](https://img.shields.io/circleci/project/github/paulmelnikow/rho-cc-promise.svg?style=flat-square)][build]
+[![build](https://img.shields.io/circleci/project/github/rho-contracts/rho-cc-promise.svg?style=flat-square)][build]
 [![code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)][prettier]
 
 [npm]: https://npmjs.com/rho-cc-promise
-[build]: https://circleci.com/gh/paulmelnikow/rho-cc-promise/tree/master
+[build]: https://circleci.com/gh/rho-contracts/rho-cc-promise/tree/master
 [prettier]: https://prettier.io/
 
 Create [rho-contracts][] for Promises.
@@ -65,14 +65,7 @@ npm install rho-contracts-fork rho-cc-promise
 
 ## Contribute
 
-- Issue Tracker: https://github.com/paulmelnikow/rho-cc-promise/issues
-- Source Code: https://github.com/paulmelnikow/rho-cc-promise
-
 Pull requests welcome!
-
-## Support
-
-If you are having issues, please let me know.
 
 ## License
 

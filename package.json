@@ -20,7 +20,7 @@
     "prettier:check": "prettier --check \"**/*.@(yml|md|js)\"",
     "test": "run-p unittest lint prettier:check"
   },
-  "repository": "paulmelnikow/rho-cc-promise",
+  "repository": "rho-contracts/rho-cc-promise",
   "dependencies": {},
   "peerDependencies": {
     "rho-contracts-fork": ">=1.2.0"
