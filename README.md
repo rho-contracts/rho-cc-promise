@@ -54,8 +54,8 @@ cc.doSomething = c
   .withError(cc.customError)
 ```
 
-It's belived compatible with most promise implementations, including ES6
-Promise and implementations which adhere to A+.
+It's compatible with most promise implementations, including ES6 Promise and
+implementations which adhere to A+.
 
 ## Installation
 
