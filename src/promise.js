@@ -1,6 +1,6 @@
 'use strict'
 
-const c = require('rho-contracts-fork')
+const c = require('@rho-contracts/rho-contracts')
 
 const isThenable = c
   .pred(value => value !== undefined && typeof value.then === 'function')
