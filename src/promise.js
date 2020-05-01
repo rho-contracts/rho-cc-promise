@@ -17,7 +17,7 @@ function returnsPromise(resultContract) {
 
   result.withError = c
     .fun({ newErrorContract: c.contract })
-    .wrap(function(newErrorContract) {
+    .wrap(function (newErrorContract) {
       return {
         ...this,
         _errorContract: newErrorContract,
@@ -25,7 +25,7 @@ function returnsPromise(resultContract) {
     })
 
   const oldWrapper = result.wrapper
-  result.wrapper = function(fn, next, context) {
+  result.wrapper = function (fn, next, context) {
     const self = this
 
     const contextHere = { ...context }
@@ -38,7 +38,7 @@ function returnsPromise(resultContract) {
       contextHere.blameMe = true
 
       return result.then(
-        function(value) {
+        function (value) {
           contextHere.blameMe = false
           c.privates.checkWrapWContext(resultContract, value, contextHere)
           contextHere.blameMe = true
@@ -46,7 +46,7 @@ function returnsPromise(resultContract) {
           // Return the original promise.
           return result
         },
-        function(err) {
+        function (err) {
           contextHere.blameMe = false
           c.privates.checkWrapWContext(self._errorContract, err, contextHere)
           contextHere.blameMe = true
@@ -60,7 +60,7 @@ function returnsPromise(resultContract) {
     return oldWrapper.call(self, checkPromise, next, context)
   }
 
-  result.toString = function() {
+  result.toString = function () {
     return `c.${this.contractName}(${
       this.thisContract !== c.any ? `this: ${this.thisContract}, ` : ''
     }${this.argumentContracts.join(', ')}${
@@ -73,7 +73,7 @@ function returnsPromise(resultContract) {
 
 function mixin(c) {
   function augment(f) {
-    return function() {
+    return function () {
       const result = f.apply(this, arguments)
 
       result.returnsPromise = returnsPromise
