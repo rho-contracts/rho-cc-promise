@@ -4,17 +4,17 @@ const c = require('./promise').mixin(require('@rho-contracts/rho-contracts'))
 
 require('should')
 
-describe('c.promise with a number result', function() {
+describe('c.promise with a number result', function () {
   const returnsNumberPromise = c.fun().returnsPromise(c.number)
-  const invoke = function(impl) {
+  const invoke = function (impl) {
     return returnsNumberPromise.wrap(impl)()
   }
 
-  context('rejected with an error', function() {
-    it('does not return a contract error', function() {
+  context('rejected with an error', function () {
+    it('does not return a contract error', function () {
       const error = Error('boom')
 
-      const impl = function() {
+      const impl = function () {
         return Promise.reject(error)
       }
 
@@ -22,11 +22,11 @@ describe('c.promise with a number result', function() {
     })
   })
 
-  context('resolved with a number result', function() {
-    it('does not return a contract error', function() {
+  context('resolved with a number result', function () {
+    it('does not return a contract error', function () {
       const result = 0
 
-      const impl = function() {
+      const impl = function () {
         return Promise.resolve(result)
       }
 
@@ -34,13 +34,13 @@ describe('c.promise with a number result', function() {
     })
   })
 
-  context('resolved with a bad result', function() {
-    it('returns a contract error', function() {
+  context('resolved with a bad result', function () {
+    it('returns a contract error', function () {
       const badResults = ['0', null, undefined]
 
       return Promise.all(
-        badResults.map(function(badResult) {
-          const impl = function() {
+        badResults.map(function (badResult) {
+          const impl = function () {
             return Promise.resolve(badResult)
           }
 
@@ -51,15 +51,15 @@ describe('c.promise with a number result', function() {
   })
 })
 
-describe('c.promise with no result', function() {
+describe('c.promise with no result', function () {
   const returnsEmptyPromise = c.fun().returnsPromise(c.value(undefined))
-  const invoke = function(impl) {
+  const invoke = function (impl) {
     return returnsEmptyPromise.wrap(impl)()
   }
 
-  context('resolves with no argument', function() {
-    it('fulfills normally', function() {
-      const impl = function() {
+  context('resolves with no argument', function () {
+    it('fulfills normally', function () {
+      const impl = function () {
         return Promise.resolve()
       }
 
@@ -67,11 +67,11 @@ describe('c.promise with no result', function() {
     })
   })
 
-  context('resolves with a value', function() {
-    it('returns a contract error', function() {
+  context('resolves with a value', function () {
+    it('returns a contract error', function () {
       const value = '0'
 
-      const impl = function() {
+      const impl = function () {
         return Promise.resolve(value)
       }
 
@@ -79,11 +79,11 @@ describe('c.promise with no result', function() {
     })
   })
 
-  context('rejected with an error', function() {
-    it('does not return a contract error', function() {
+  context('rejected with an error', function () {
+    it('does not return a contract error', function () {
       const error = Error('boom')
 
-      const impl = function() {
+      const impl = function () {
         return Promise.reject(error)
       }
 
@@ -92,17 +92,17 @@ describe('c.promise with no result', function() {
   })
 })
 
-describe('c.promise with optional results', function() {
+describe('c.promise with optional results', function () {
   const returnsOptionalNumberPromise = c
     .fun()
     .returnsPromise(c.optional(c.number))
-  const invoke = function(impl) {
+  const invoke = function (impl) {
     return returnsOptionalNumberPromise.wrap(impl)()
   }
 
-  context('resolves with no result', function() {
-    it('fultills normally', function() {
-      const impl = function() {
+  context('resolves with no result', function () {
+    it('fultills normally', function () {
+      const impl = function () {
         return Promise.resolve()
       }
 
@@ -110,11 +110,11 @@ describe('c.promise with optional results', function() {
     })
   })
 
-  context('resolves with a result', function() {
-    it('fulfills normally', function() {
+  context('resolves with a result', function () {
+    it('fulfills normally', function () {
       const value = 0
 
-      const impl = function() {
+      const impl = function () {
         return Promise.resolve(value)
       }
 
@@ -122,11 +122,11 @@ describe('c.promise with optional results', function() {
     })
   })
 
-  context('resolves with an incorrect result', function() {
-    it('rejects with a contract error', function() {
+  context('resolves with an incorrect result', function () {
+    it('rejects with a contract error', function () {
       const value = '0'
 
-      const impl = function() {
+      const impl = function () {
         return Promise.resolve(value)
       }
 
@@ -134,11 +134,11 @@ describe('c.promise with optional results', function() {
     })
   })
 
-  context('invoked with an incorrect error', function() {
-    it('rejects with a contract error', function() {
+  context('invoked with an incorrect error', function () {
+    it('rejects with a contract error', function () {
       const value = '0'
 
-      const impl = function() {
+      const impl = function () {
         return Promise.reject(value)
       }
 
@@ -147,17 +147,17 @@ describe('c.promise with optional results', function() {
   })
 })
 
-describe('c.callback with a custom error contract', function() {
+describe('c.callback with a custom error contract', function () {
   const errorContract = c.array(c.error)
   const returnsCustomErrorPromise = c
     .fun()
     .returnsPromise(c.optional(c.number))
     .withError(errorContract)
-  const invoke = function(impl) {
+  const invoke = function (impl) {
     return returnsCustomErrorPromise.wrap(impl)()
   }
 
-  it('displays a good description', function() {
+  it('displays a good description', function () {
     returnsCustomErrorPromise
       .toString()
       .should.eql(
@@ -165,13 +165,13 @@ describe('c.callback with a custom error contract', function() {
       )
   })
 
-  context('invoked with a good error', function() {
-    it('returns the error', function() {
+  context('invoked with a good error', function () {
+    it('returns the error', function () {
       const goodErrors = [[Error(), Error()], [Error()], []]
 
       return Promise.all(
-        goodErrors.map(function(goodError) {
-          const impl = function() {
+        goodErrors.map(function (goodError) {
+          const impl = function () {
             return Promise.reject(goodError)
           }
 
@@ -181,11 +181,11 @@ describe('c.callback with a custom error contract', function() {
     })
   })
 
-  context('invoked with an incorrect error', function() {
-    it('returns a contract error', function() {
+  context('invoked with an incorrect error', function () {
+    it('returns a contract error', function () {
       const badError = Error()
 
-      const impl = function() {
+      const impl = function () {
         return Promise.reject(badError)
       }
 
