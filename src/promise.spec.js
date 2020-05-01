@@ -1,6 +1,6 @@
 'use strict'
 
-const c = require('./promise').mixin(require('rho-contracts-fork'))
+const c = require('./promise').mixin(require('@rho-contracts/rho-contracts'))
 
 require('should')
 

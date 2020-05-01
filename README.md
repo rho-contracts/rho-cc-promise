@@ -1,9 +1,9 @@
 # rho-cc-promise
 
-[![version](https://img.shields.io/npm/v/rho-cc-promise.svg?style=flat-square)][npm]
-[![license](https://img.shields.io/npm/l/rho-cc-promise.svg?style=flat-square)][npm]
-[![build](https://img.shields.io/circleci/project/github/rho-contracts/rho-cc-promise.svg?style=flat-square)][build]
-[![code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)][prettier]
+[![version](https://img.shields.io/npm/v/rho-cc-promise?style=flat-square)][npm]
+[![license](https://img.shields.io/npm/l/rho-cc-promise?style=flat-square)][npm]
+[![build](https://img.shields.io/circleci/project/github/rho-contracts/rho-cc-promise?style=flat-square)][build]
+[![code style](https://img.shields.io/badge/code_style-prettier-ff69b4?style=flat-square)][prettier]
 
 [npm]: https://npmjs.com/rho-cc-promise
 [build]: https://circleci.com/gh/rho-contracts/rho-cc-promise/tree/master
@@ -11,15 +11,15 @@
 
 Create [rho-contracts][] for Promises.
 
-[rho-contracts]: https://github.com/bodylabs/rho-contracts-fork
+[rho-contracts]: https://github.com/rho-contracts/rho-contracts
 
 ## Usage
 
-You must use the Body Labs package, `rho-contracts-fork`:
+Use with `@rho-contracts/rho-contracts`:
 
 ```js
   "dependencies": {
-    "rho-contracts-fork": "^1.2.2"
+    "@rho-contracts/rho-contracts": "^3.0.0"
   }
 ```
 
