@@ -26,7 +26,7 @@
     "@rho-contracts/rho-contracts": ">=3.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.0.1",
+    "eslint": "^7.14.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-config-standard": "^14.0.1",
     "eslint-plugin-import": "^2.14.0",
